@@ -20,6 +20,10 @@ composer require umbrellio/event-tracker
 - Log into influxdb directly or by telegraf
 - Prometheus support
 
+## Known issues
+
+- Prometheus integration. If your app deployed to kubernetes and it has more than one pod, where Prometheus gets metrics, then your metrics will be doubled. The reason it happens is one storage for metrics (Redis). Prometheus requests metrics from every fpm pod and they give same metrics, which prometheus sums up. 
+
 ## Integration
 
 ### General
