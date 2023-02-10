@@ -5,14 +5,14 @@ on:
     branches:
       - master
   pull_request:
-  
+
 env:
   cache_key: cache-v1
 
-jobs:	
+jobs:
   lint:
     runs-on: '${{ matrix.operating_system }}'
-    strategy:	
+    strategy:
       matrix:
         operating_system:
           - ubuntu-20.04
@@ -20,12 +20,12 @@ jobs:
           - '7.4'
       fail-fast: false
     name: 'Lint'
-    steps:	
+    steps:
       - name: 'Checkout'
         uses: actions/checkout@v2
       - name: 'Setup PHP'
-        uses: shivammathur/setup-php@v2	
-        with:	
+        uses: shivammathur/setup-php@v2
+        with:
           php-version: ${{ matrix.php_versions }}
       - name: 'Install PHP dependencies with Composer'
         run: composer install --prefer-dist --no-progress --no-suggest --optimize-autoloader
@@ -37,7 +37,7 @@ jobs:
       matrix:
         operating_system:
           - ubuntu-20.04
-        php_versions: 
+        php_versions:
           - '7.4'
     runs-on: '${{ matrix.operating_system }}'
     name: 'Test / PHP ${{ matrix.php_versions }}'
@@ -68,7 +68,7 @@ jobs:
         run: ./vendor/bin/php-coveralls --coverage_clover=build/logs/clover.xml -v
   coverage:
     needs: test
-    runs-on:           
+    runs-on:
       - ubuntu-20.04
     name: "Code coverage"
     steps:

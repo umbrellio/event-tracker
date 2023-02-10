@@ -19,6 +19,7 @@ composer require umbrellio/event-tracker
 - Log anything you want by multipurpose classes - EventRepository and PrometheusRepository
 - Log into influxdb directly or by telegraf
 - Prometheus support
+- Application metrics exporter
 
 ## Known issues
 
@@ -30,6 +31,46 @@ composer require umbrellio/event-tracker
 
 1. Execute `php artisan vendor:publish` for publishing config example in your `config` directory
 2. Write your credentials and settings in config. If you don't need some connections or trackers you can delete them.
+
+### Prometheus
+
+Each instances of your application must have own storage for your metrics. You cannot use shared storage with several replicas of your application. In that case scraping will return metrics for both the current replica and other replicas.
+
+You could still use shared storage if you have only one fpm replica.
+
+In distributed systems like Kubernetes probably your application is likely running in multiple instances and in different modes (fpm, horizon). Each of them produces metrics and each of them has to be monitored by Prometheus. The exporter provided by this package will solve mentioned above problem. Correct setup should include:
+
+- Each replica has its own (local) redis instance to store metrics
+- Each replica has its own exporter which exposes `/metrics`-endpoint and grabs metrics from the redis instance. The provided exporter is available: ghcr.io/umbrellio/event-tracker/exporter:latest
+- Application writes metrics to that local redis instance
+- `database.php` has separated connection to the local instance
+
+```php
+return [
+    ...
+    'redis' => [
+        ...
+        'metrics' => [
+            'host' => env('REDIS_METRICS_HOST', '127.0.0.1'),
+            'port' => env('REDIS_METRICS_PORT', 6379),
+            'database' => env('REDIS_METRICS_DATABASE', 0),
+        ],
+    ],
+];
+```
+- `event_tracker.php` has the name of this connection
+
+```php
+return [
+    ...
+    'connections' => [
+        ...
+        'prometheus' => [
+            'redis' => 'metrics',
+        ],
+    ],
+];
+```
 
 ## Trackers
 
