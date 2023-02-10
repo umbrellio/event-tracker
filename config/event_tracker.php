@@ -28,6 +28,7 @@ return [
             ],
         ],
         'prometheus' => [
+            'redis' => 'default',
             'labels' => [
                 'namespace' => 'app_ns',
             ],

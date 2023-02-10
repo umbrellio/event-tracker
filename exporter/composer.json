@@ -1,0 +1,9 @@
+{
+    "name": "umbrellio/exporter",
+    "type": "project",
+    "require": {
+        "php": ">=8.2",
+        "promphp/prometheus_client_php": "^2.6"
+    },
+    "license": "MIT"
+}
