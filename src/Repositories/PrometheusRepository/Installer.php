@@ -24,7 +24,8 @@ class Installer extends BaseRepositoryInstaller
             /** @var RedisManager $redisManager */
             $redisManager = $this->app->make(RedisManager::class);
             $connection = $config['connections']['prometheus']['redis'];
-            $redis = $redisManager->connection($connection)->client();
+            $redis = $redisManager->connection($connection)
+                ->client();
 
             $storage = Redis::fromExistingConnection($redis);
             $registry = new CollectorRegistry($storage, false);
