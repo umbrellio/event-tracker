@@ -24,7 +24,7 @@ class ResponseTimeTrackerMiddlewareTest extends TestCase
         $eventAdapter->expects($this->once())
             ->method('write')
             ->with($measurement, $this->greaterThan(0), [
-                'urlName' => 'domain.com/test',
+                'action' => '',
             ]);
 
         $middleware = new ResponseTimeTrackerMiddleware($eventAdapter, compact('measurement'));

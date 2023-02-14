@@ -27,9 +27,10 @@ class ResponseTimeTrackerMiddleware
     public function terminate(Request $request, Response $response): void
     {
         $responseTime = $this->calculateResponseTime();
+        $route = $request->route();
 
         $this->adapter->write($this->metricConfig['measurement'], $responseTime, [
-            'urlName' => $request->path(),
+            'action' => $route ? $route->getActionName() : '',
         ]);
     }
 

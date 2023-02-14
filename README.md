@@ -85,13 +85,13 @@ This middleware has to be last one in your routes. Use Laravel's feature
 
 > **Influx**
 >
-> Records have follow format: `app_prefix.response_time,urlName=domain.com/path1 val=1608201916"`, where `url` is tag's
+> Records have follow format: `app_prefix.response_time,action=ExampleController@index val=1608201916"`, where `url` is tag's
 > name, and val is field's name.
 
 > **Prometheus**
 >
 > - Buckets can be configured in config
-> - Metrics have follow format: app_prefix_response_time_bucket{namespace="app-nc",urlName="/",le="1"} 1
+> - Metrics have follow format: app_prefix_response_time_bucket{namespace="app-nc",action="ExampleController@index",le="1"} 1
 
 You can change measurement name instead of 'response_time' in config at `trackers` block. All trackers have this
 opportunity.
@@ -157,13 +157,12 @@ class GuzzleClientServiceProvider extends ServiceProvider
 >
 > Format of writing will
 >
-be: `app_prefix.external_api_response,urlName=https://api.domain.com/endpoint/edit,host=api.domain.com,status=200,total_time=1.0,connect_time=0.5,namelookup_time=0.5 val=1.0`
+be: `app_prefix.external_api_response,host=api.domain.com,status=200,total_time=1.0,connect_time=0.5,namelookup_time=0.5 val=1.0`
 
 > **Prometheus**
 >
 > - Buckets can be configured in config
-> - Metrics have follow format: app_prefix_external_api_response_bucket{namespace="app-ns",host="domain.com"
-    ,status=200,urlName="/",le="2"} 1
+> - Metrics have follow format: app_prefix_external_api_response_bucket{namespace="app-ns",host="domain.com",status=200,le="2"} 1
 
 You can configure last three tags in `metrics` option, if you don't need something. Beside of this tags you can specify
 any fields from handlerStats attribute in GuzzleHttp\TransferStats object.

@@ -39,7 +39,6 @@ class GuzzleClientOnStatsCallbackCreatorTest extends TestCase
         $eventTracker->expects($this->once())
             ->method('write')
             ->with('external_api_response', 2, [
-                'urlName' => 'https://domain.com/1/edit',
                 'host' => 'domain.com',
                 'status' => 200,
                 'total_time' => 2,

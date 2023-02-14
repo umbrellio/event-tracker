@@ -8,6 +8,7 @@ use Closure;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\ResponseInterface;
 use Umbrellio\EventTracker\Services\Adapters\BaseAdapter;
+use Umbrellio\EventTracker\Services\Adapters\PrometheusHistogramAdapter;
 
 class GuzzleClientOnStatsCallbackCreator
 {
@@ -43,18 +44,17 @@ class GuzzleClientOnStatsCallbackCreator
             $metrics = $this->summator->flush();
         }
 
-        $tags = array_merge(
-            [
-                'host' => $stats->getRequest()
-                    ->getUri()
-                    ->getHost(),
-                'urlName' => (string) $stats->getRequest()
-                    ->getUri(),
-                'status' => optional($stats->getResponse())
-                    ->getStatusCode() ?? self::DEFAULT_STATUS_CODE,
-            ],
-            $metrics
-        );
+        $tags = [
+            'host' => $stats->getRequest()
+                ->getUri()
+                ->getHost(),
+            'status' => optional($stats->getResponse())
+                ->getStatusCode() ?? self::DEFAULT_STATUS_CODE,
+        ];
+
+        if (!$this->adapter instanceof PrometheusHistogramAdapter) {
+            $tags = array_merge($tags, $metrics);
+        }
 
         $this->adapter->write($this->config['measurement'], $metrics[$this->config['main_metric']], $tags);
     }
