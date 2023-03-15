@@ -8,6 +8,7 @@ use Illuminate\Redis\RedisManager;
 use Illuminate\Support\Facades\Route;
 use Prometheus\CollectorRegistry;
 use Prometheus\Storage\Redis;
+use Redis as NativeRedis;
 use Umbrellio\EventTracker\Repositories\BaseRepositoryInstaller;
 
 class Installer extends BaseRepositoryInstaller
@@ -26,6 +27,7 @@ class Installer extends BaseRepositoryInstaller
             $connection = $config['connections']['prometheus']['redis'];
             $redis = $redisManager->connection($connection)
                 ->client();
+            $redis->setOption(NativeRedis::OPT_PREFIX, '');
 
             $storage = Redis::fromExistingConnection($redis);
             $registry = new CollectorRegistry($storage, false);
