@@ -44,7 +44,7 @@ class JobsLogTrackerTest extends TestCase
         $eventAdapter
             ->expects($this->once())
             ->method('write')
-            ->with($measurement, '', [
+            ->with($measurement, 1, [
                 'eventName' => 'processing',
                 'jobName' => $jobName,
             ]);

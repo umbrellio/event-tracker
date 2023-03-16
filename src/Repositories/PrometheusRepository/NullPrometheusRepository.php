@@ -11,7 +11,10 @@ class NullPrometheusRepository implements PrometheusRepositoryContract
         return [];
     }
 
-    public function writeCounter(string $measurement, array $trackerLabels = []): void
+    /**
+     * @param float|int $count
+     */
+    public function writeCounter(string $measurement, array $trackerLabels = [], $count = 1): void
     {
     }
 
