@@ -8,6 +8,6 @@ class PrometheusCounterAdapter extends BasePrometheusAdapter
 {
     public function write(string $measurement, $value = null, array $tags = []): void
     {
-        $this->repository->writeCounter($measurement, $tags);
+        $this->repository->writeCounter($measurement, $tags, $value);
     }
 }

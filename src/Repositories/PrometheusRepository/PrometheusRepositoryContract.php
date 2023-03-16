@@ -7,7 +7,10 @@ namespace Umbrellio\EventTracker\Repositories\PrometheusRepository;
 interface PrometheusRepositoryContract
 {
     public function getMetrics(): array;
-    public function writeCounter(string $measurement, array $trackerLabels): void;
+    /**
+     * @param float|int $count
+     */
+    public function writeCounter(string $measurement, array $trackerLabels, $count): void;
     public function writeGauge(string $measurement, $value, array $trackerLabels): void;
     public function writeHistogram(string $measurement, $value, array $trackerLabels, array $buckets): void;
     public function writeSummary(

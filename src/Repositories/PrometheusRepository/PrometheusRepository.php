@@ -22,12 +22,15 @@ class PrometheusRepository implements PrometheusRepositoryContract
         return $this->registry->getMetricFamilySamples();
     }
 
-    public function writeCounter(string $measurement, array $trackerLabels = []): void
+    /**
+     * @param float|int $count
+     */
+    public function writeCounter(string $measurement, array $trackerLabels = [], $count = 1): void
     {
         $labels = $this->labels($trackerLabels);
 
         $this->registry->getOrRegisterCounter($this->namespace(), $measurement, '', array_keys($labels))
-            ->inc($labels);
+            ->incBy($count, $labels);
     }
 
     public function writeGauge(string $measurement, $value, array $trackerLabels = []): void

@@ -27,7 +27,7 @@ class JobsLogTracker
             return;
         }
 
-        $this->adapter->write($this->metricConfig['measurement'], '', [
+        $this->adapter->write($this->metricConfig['measurement'], 1, [
             'jobName' => $job->resolveName(),
             'eventName' => $eventName,
         ]);
