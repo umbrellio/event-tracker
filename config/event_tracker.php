@@ -28,7 +28,17 @@ return [
             ],
         ],
         'prometheus' => [
-            'redis' => 'default',
+            'redis' => [
+                'client' => 'phpredis',
+                'default' => [
+                    'url' => 'localhost',
+                    'host' => 'localhost',
+                    'username' => 'redis',
+                    'password' => '',
+                    'port' => '6379',
+                    'database' => 0,
+                ]
+            ],
             'labels' => [
                 'namespace' => 'app_ns',
             ],
