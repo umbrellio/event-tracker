@@ -30,7 +30,7 @@ return [
         'prometheus' => [
             'redis' => [
                 'client' => env('EVENT_TRACKER_REDIS_CLIENT', 'phpredis'),
-                'connection' => [
+                'credentials' => [
                     'host' => env('EVENT_TRACKER_REDIS_HOST', 'localhost'),
                     'username' => env('EVENT_TRACKER_REDIS_USERNAME', 'redis'),
                     'password' => env('EVENT_TRACKER_REDIS_PASSWORD'),

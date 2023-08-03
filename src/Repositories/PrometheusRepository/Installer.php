@@ -28,7 +28,7 @@ class Installer extends BaseRepositoryInstaller
                 'driver' => $redisConfig['client'],
                 'config' => $redisConfig,
             ]);
-            $redis = $redisManager->connection('connection')
+            $redis = $redisManager->connection('credentials')
                 ->client();
             $redis->setOption(NativeRedis::OPT_PREFIX, '');
 
