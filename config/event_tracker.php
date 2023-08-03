@@ -29,14 +29,13 @@ return [
         ],
         'prometheus' => [
             'redis' => [
-                'client' => 'phpredis',
-                'default' => [
-                    'url' => 'localhost',
-                    'host' => 'localhost',
-                    'username' => 'redis',
-                    'password' => '',
-                    'port' => '6379',
-                    'database' => 0,
+                'client' => env('EVENT_TRACKER_REDIS_CLIENT', 'phpredis'),
+                'connection' => [
+                    'host' => env('EVENT_TRACKER_REDIS_HOST', 'localhost'),
+                    'username' => env('EVENT_TRACKER_REDIS_USERNAME', 'redis'),
+                    'password' => env('EVENT_TRACKER_REDIS_PASSWORD'),
+                    'port' => env('EVENT_TRACKER_REDIS_PORT', '6379'),
+                    'database' => env('EVENT_TRACKER_REDIS_DATABASE', 0),
                 ]
             ],
             'labels' => [
