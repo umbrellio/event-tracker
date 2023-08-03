@@ -36,7 +36,7 @@ return [
                     'password' => env('EVENT_TRACKER_REDIS_PASSWORD'),
                     'port' => env('EVENT_TRACKER_REDIS_PORT', '6379'),
                     'database' => env('EVENT_TRACKER_REDIS_DATABASE', 0),
-                ]
+                ],
             ],
             'labels' => [
                 'namespace' => 'app_ns',
