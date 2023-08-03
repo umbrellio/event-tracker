@@ -23,11 +23,7 @@ class Installer extends BaseRepositoryInstaller
 
         $this->app->singleton(PrometheusRepositoryContract::class, function () use ($config) {
             $redisConfig = $config['connections']['prometheus']['redis'];
-            $redisManager = $this->app->make(RedisManager::class, [
-                'app' => $this->app,
-                'driver' => $redisConfig['client'],
-                'config' => $redisConfig,
-            ]);
+            $redisManager = new RedisManager($this->app, $redisConfig['client'], $redisConfig);
             $redis = $redisManager->connection('credentials')
                 ->client();
             $redis->setOption(NativeRedis::OPT_PREFIX, '');
