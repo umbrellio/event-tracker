@@ -28,7 +28,16 @@ return [
             ],
         ],
         'prometheus' => [
-            'redis' => 'default',
+            'redis' => [
+                'client' => env('EVENT_TRACKER_REDIS_CLIENT', 'phpredis'),
+                'credentials' => [
+                    'host' => env('EVENT_TRACKER_REDIS_HOST', 'localhost'),
+                    'username' => env('EVENT_TRACKER_REDIS_USERNAME', 'redis'),
+                    'password' => env('EVENT_TRACKER_REDIS_PASSWORD'),
+                    'port' => env('EVENT_TRACKER_REDIS_PORT', '6379'),
+                    'database' => env('EVENT_TRACKER_REDIS_DATABASE', 0),
+                ],
+            ],
             'labels' => [
                 'namespace' => 'app_ns',
             ],
