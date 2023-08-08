@@ -41,32 +41,25 @@ You could still use shared storage if you have only one fpm replica.
 In distributed systems like Kubernetes probably your application is likely running in multiple instances and in different modes (fpm, horizon). Each of them produces metrics and each of them has to be monitored by Prometheus. The exporter provided by this package will solve mentioned above problem. Correct setup should include:
 
 - Each replica has its own (local) redis instance to store metrics
-- Each replica has its own exporter which exposes `/metrics`-endpoint and grabs metrics from the redis instance. The provided exporter is available: ghcr.io/umbrellio/event-tracker/exporter:latest
+- Each replica has its own exporter which exposes `/metrics`-endpoint and grabs metrics from the redis instance. The provided exporter is available: [event-tracker/exporter](ghcr.io/umbrellio/event-tracker/exporter:latest)
 - Application writes metrics to that local redis instance
-- `database.php` has separated connection to the local instance
+- `event_tracker.php` config has correct credentials for local redis
 
 ```php
 return [
-    ...
-    'redis' => [
-        ...
-        'metrics' => [
-            'host' => env('REDIS_METRICS_HOST', '127.0.0.1'),
-            'port' => env('REDIS_METRICS_PORT', 6379),
-            'database' => env('REDIS_METRICS_DATABASE', 0),
-        ],
-    ],
-];
-```
-- `event_tracker.php` has the name of this connection
-
-```php
-return [
-    ...
+    'connection' => 'prometheus',
     'connections' => [
-        ...
         'prometheus' => [
-            'redis' => 'metrics',
+            'redis' => [
+                'client' => env('EVENT_TRACKER_REDIS_CLIENT', 'phpredis'),
+                'credentials' => [
+                    'host' => env('EVENT_TRACKER_REDIS_HOST', 'localhost'),
+                    'username' => env('EVENT_TRACKER_REDIS_USERNAME', 'redis'),
+                    'password' => env('EVENT_TRACKER_REDIS_PASSWORD'),
+                    'port' => env('EVENT_TRACKER_REDIS_PORT', '6379'),
+                    'database' => env('EVENT_TRACKER_REDIS_DATABASE', 0),
+                ],
+            ],
         ],
     ],
 ];
