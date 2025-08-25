@@ -33,6 +33,7 @@ class GuzzleClientOnStatsCallbackCreator
     private function saveStats(TransferStats $stats): void
     {
         $metrics = $this->fetchMetrics($stats);
+        $mainMetric = $metrics[$this->config['main_metric']];
 
         if ($this->config['group_redirects_in_one_request'] ?? false) {
             $this->summator->add($metrics);
@@ -44,19 +45,26 @@ class GuzzleClientOnStatsCallbackCreator
             $metrics = $this->summator->flush();
         }
 
+        /**
+         * Does nothing if the client has the option 'stream' => true.
+         */
+        if ($mainMetric === null) {
+            return;
+        }
+
         $tags = [
             'host' => $stats->getRequest()
                 ->getUri()
                 ->getHost(),
             'status' => optional($stats->getResponse())
-                ->getStatusCode() ?? self::DEFAULT_STATUS_CODE,
+                    ->getStatusCode() ?? self::DEFAULT_STATUS_CODE,
         ];
 
         if (!$this->adapter instanceof PrometheusHistogramAdapter) {
             $tags = array_merge($tags, $metrics);
         }
 
-        $this->adapter->write($this->config['measurement'], $metrics[$this->config['main_metric']], $tags);
+        $this->adapter->write($this->config['measurement'], $mainMetric, $tags);
     }
 
     private function isRedirectResponse(ResponseInterface $response): bool
