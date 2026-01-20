@@ -33,7 +33,10 @@ class GuzzleClientOnStatsCallbackCreator
     private function saveStats(TransferStats $stats): void
     {
         $metrics = $this->fetchMetrics($stats);
-        $mainMetric = $metrics[$this->config['main_metric']];
+        $mainMetric = $metrics[$this->config['main_metric']] ?? null;
+        if ($mainMetric === null) {
+            return;
+        }
 
         if ($this->config['group_redirects_in_one_request'] ?? false) {
             $this->summator->add($metrics);
@@ -43,13 +46,6 @@ class GuzzleClientOnStatsCallbackCreator
             }
 
             $metrics = $this->summator->flush();
-        }
-
-        /**
-         * Does nothing if the client has the option 'stream' => true.
-         */
-        if ($mainMetric === null) {
-            return;
         }
 
         $tags = [
