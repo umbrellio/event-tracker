@@ -20,5 +20,5 @@ RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoload
 
 COPY ./ ./
 
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+CMD ["/bin/ash", "-o", "pipefail", "-c", "php -S 0.0.0.0:8000 -t public 2>&1 | php /exporter/log-formatter.php"]
 
