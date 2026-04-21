@@ -17,7 +17,7 @@ while (($line = fgets(STDIN)) !== false) {
             'remote_addr' => $m[2],
             'status'      => $m[3],
             'request'     => $m[4] . ' ' . $m[5],
-        ], JSON_UNESCAPED_SLASHES) . "\n";
+        ], JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE) . "\n";
         continue;
     }
 
@@ -30,5 +30,5 @@ while (($line = fgets(STDIN)) !== false) {
     echo json_encode([
         'time_local' => date('D M j H:i:s Y'),
         'message'    => $line,
-    ], JSON_UNESCAPED_SLASHES) . "\n";
+    ], JSON_UNESCAPED_SLASHES | JSON_INVALID_UTF8_SUBSTITUTE) . "\n";
 }
