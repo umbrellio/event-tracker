@@ -5,7 +5,7 @@ declare(strict_types=1);
 ob_implicit_flush(true);
 
 while (($line = fgets(STDIN)) !== false) {
-    $line = rtrim($line);
+    $line = rtrim($line, "\r\n");
     if ($line === '') {
         continue;
     }
