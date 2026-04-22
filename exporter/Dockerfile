@@ -1,5 +1,5 @@
 ARG dependency_proxy_prefix="library"
-FROM mlocati/php-extension-installer:2.0.2 AS php-extension-installer
+FROM mlocati/php-extension-installer:2.10.16 AS php-extension-installer
 FROM $dependency_proxy_prefix/php:8.2-alpine
 
 LABEL maintainer="Umbrellio"
