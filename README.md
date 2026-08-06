@@ -166,6 +166,66 @@ However if you want track common time of response, set this option to `true`.
 
 Field `val` can be configured by option `main_metric`. This field must be one of list in `metrics` option.
 
+### External api response body
+
+Some external APIs use a single endpoint for many different operations (e.g. JSON-RPC style APIs) and always answer
+with the same HTTP status code, putting the actual operation name and error code inside the request/response JSON
+body instead. In that case `external_api_response` tracker cannot tell those operations apart, because it only has
+access to the host and the HTTP status code.
+
+This tracker counts requests, extracting extra tags out of the request's and response's JSON bodies by a dot-notation
+path (powered by Laravel's `data_get()`), so you can split the metric by things like the RPC method name or an
+application-level error code, on top of the same `host`/`status` tags as `external_api_response`.
+
+Integration is the same as for `external_api_response`, but using classes from the `ExternalApiResponseBody`
+namespace:
+
+```
+$callbackCreator = app(Umbrellio\EventTracker\Trackers\ExternalApiResponseBody\GuzzleClientOnStatsCallbackCreator::class);
+$client = new GuzzleHttp\Client(['on_stats' => $callbackCreator->create()]);
+```
+
+If you need to track both `external_api_response` and `external_api_response_body` on the same client, combine both
+callbacks into one:
+
+```
+$responseCallback = app(Umbrellio\EventTracker\Trackers\ExternalApiResponse\GuzzleClientOnStatsCallbackCreator::class)->create();
+$bodyCallback = app(Umbrellio\EventTracker\Trackers\ExternalApiResponseBody\GuzzleClientOnStatsCallbackCreator::class)->create();
+
+$client = new GuzzleHttp\Client([
+    'on_stats' => static function (GuzzleHttp\TransferStats $stats) use ($responseCallback, $bodyCallback): void {
+        $responseCallback($stats);
+        $bodyCallback($stats);
+    },
+]);
+```
+
+Configuration:
+
+```php
+'external_api_response_body' => [
+    'measurement' => 'event_tracker_external_api_response_body',
+
+    // tag name => dot-notation path in decoded json body
+    'request_fields' => ['method' => 'method'],
+    'response_fields' => ['code' => 'error.code'],
+
+    // used when a field is missing from the body, the body isn't valid json, or the field's value is null
+    'default_value' => 'unknown',
+
+    // bodies bigger than this (in bytes) are skipped and default_value is used instead
+    'max_body_bytes' => 65536,
+],
+```
+
+> **Prometheus**
+>
+> Metrics have follow format: app_prefix_external_api_response_body{namespace="app-ns",host="domain.com",status="200",method="pointg/sessions/create",code="incorrect_device_type"} 1
+
+Bodies are read without disturbing the rest of the application: the stream is rewound right after reading, and
+non-seekable streams (e.g. clients created with the `stream` option) are skipped entirely, exactly like
+`external_api_response` does for its `main_metric`.
+
 ### Custom trackers
 
 #### Influx

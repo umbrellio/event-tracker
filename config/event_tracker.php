@@ -72,5 +72,18 @@ return [
 
             'prom_buckets' => [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
         ],
+        'external_api_response_body' => [
+            'measurement' => 'event_tracker_external_api_response_body',
+
+            // tag name => dot-notation path in decoded json body
+            'request_fields' => [],
+            'response_fields' => [],
+
+            // used when a field is missing from the body or the body isn't valid json
+            'default_value' => 'unknown',
+
+            // bodies bigger than this (in bytes) are skipped and default_value is used instead
+            'max_body_bytes' => 65536,
+        ],
     ],
 ];
