@@ -39,8 +39,8 @@ class MessageBodyFieldsExtractor
         $body = $message->getBody();
 
         /**
-         * Non-seekable bodies belong to streamed requests/responses - reading them here
-         * would consume data the application still needs to process.
+         * Non-seekable bodies belong to streamed requests/responses - reading them here would consume data the
+         * application still needs to process.
          */
         if (!$body->isSeekable() || ($body->getSize() !== null && $body->getSize() > $maxBodyBytes)) {
             return [];

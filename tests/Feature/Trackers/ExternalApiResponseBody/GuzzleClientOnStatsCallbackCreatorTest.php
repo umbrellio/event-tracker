@@ -29,17 +29,16 @@ class GuzzleClientOnStatsCallbackCreatorTest extends TestCase
                 'code' => 'incorrect_device_type',
             ]);
 
-        $callback = $this->creator($eventAdapter)->create();
+        $callback = $this->creator($eventAdapter)
+            ->create();
 
-        $request = new Request(
-            'POST',
-            'https://domain.com/api/v2/service',
-            [],
-            json_encode(['method' => 'pointg/sessions/create'])
-        );
-        $response = new Response(200, [], json_encode(['error' => ['code' => 'incorrect_device_type']]));
+        $response = new Response(200, [], json_encode([
+            'error' => [
+                'code' => 'incorrect_device_type',
+            ],
+        ]));
 
-        $callback(new TransferStats($request, $response));
+        $callback(new TransferStats($this->request(), $response));
     }
 
     /**
@@ -57,17 +56,16 @@ class GuzzleClientOnStatsCallbackCreatorTest extends TestCase
                 'code' => 'unknown',
             ]);
 
-        $callback = $this->creator($eventAdapter)->create();
+        $callback = $this->creator($eventAdapter)
+            ->create();
 
-        $request = new Request(
-            'POST',
-            'https://domain.com/api/v2/service',
-            [],
-            json_encode(['method' => 'pointg/sessions/create'])
-        );
-        $response = new Response(200, [], json_encode(['data' => ['url' => 'https://game.example']]));
+        $response = new Response(200, [], json_encode([
+            'data' => [
+                'url' => 'https://game.example',
+            ],
+        ]));
 
-        $callback(new TransferStats($request, $response));
+        $callback(new TransferStats($this->request(), $response));
     }
 
     /**
@@ -85,24 +83,29 @@ class GuzzleClientOnStatsCallbackCreatorTest extends TestCase
                 'code' => 'unknown',
             ]);
 
-        $callback = $this->creator($eventAdapter)->create();
+        $callback = $this->creator($eventAdapter)
+            ->create();
 
-        $request = new Request(
-            'POST',
-            'https://domain.com/api/v2/service',
-            [],
-            json_encode(['method' => 'pointg/sessions/create'])
-        );
+        $callback(new TransferStats($this->request(), null));
+    }
 
-        $callback(new TransferStats($request, null));
+    private function request(): Request
+    {
+        return new Request('POST', 'https://domain.com/api/v2/service', [], json_encode([
+            'method' => 'pointg/sessions/create',
+        ]));
     }
 
     private function creator(EventAdapter $eventAdapter): GuzzleClientOnStatsCallbackCreator
     {
         return new GuzzleClientOnStatsCallbackCreator($eventAdapter, new MessageBodyFieldsExtractor(), [
             'measurement' => 'external_api_response_body',
-            'request_fields' => ['method' => 'method'],
-            'response_fields' => ['code' => 'error.code'],
+            'request_fields' => [
+                'method' => 'method',
+            ],
+            'response_fields' => [
+                'code' => 'error.code',
+            ],
         ]);
     }
 }

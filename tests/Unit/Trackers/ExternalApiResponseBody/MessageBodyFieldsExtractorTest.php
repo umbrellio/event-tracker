@@ -18,11 +18,19 @@ class MessageBodyFieldsExtractorTest extends TestCase
     public function extractsNestedFieldsByDotNotation(): void
     {
         $extractor = new MessageBodyFieldsExtractor();
-        $message = new Request('POST', '/', [], json_encode(['error' => ['code' => 'incorrect_jurisdiction']]));
+        $message = new Request('POST', '/', [], json_encode([
+            'error' => [
+                'code' => 'incorrect_jurisdiction',
+            ],
+        ]));
 
-        $result = $extractor->extract($message, ['code' => 'error.code']);
+        $result = $extractor->extract($message, [
+            'code' => 'error.code',
+        ]);
 
-        $this->assertSame(['code' => 'incorrect_jurisdiction'], $result);
+        $this->assertSame([
+            'code' => 'incorrect_jurisdiction',
+        ], $result);
     }
 
     /**
@@ -31,11 +39,17 @@ class MessageBodyFieldsExtractorTest extends TestCase
     public function returnsDefaultValueForMissingField(): void
     {
         $extractor = new MessageBodyFieldsExtractor();
-        $message = new Request('POST', '/', [], json_encode(['data' => []]));
+        $message = new Request('POST', '/', [], json_encode([
+            'data' => [],
+        ]));
 
-        $result = $extractor->extract($message, ['code' => 'error.code']);
+        $result = $extractor->extract($message, [
+            'code' => 'error.code',
+        ]);
 
-        $this->assertSame(['code' => 'unknown'], $result);
+        $this->assertSame([
+            'code' => 'unknown',
+        ], $result);
     }
 
     /**
@@ -44,11 +58,19 @@ class MessageBodyFieldsExtractorTest extends TestCase
     public function returnsConfiguredDefaultValueForMissingField(): void
     {
         $extractor = new MessageBodyFieldsExtractor();
-        $message = new Request('POST', '/', [], json_encode(['data' => []]));
+        $message = new Request('POST', '/', [], json_encode([
+            'data' => [],
+        ]));
 
-        $result = $extractor->extract($message, ['code' => 'error.code'], ['default_value' => 'none']);
+        $result = $extractor->extract($message, [
+            'code' => 'error.code',
+        ], [
+            'default_value' => 'none',
+        ]);
 
-        $this->assertSame(['code' => 'none'], $result);
+        $this->assertSame([
+            'code' => 'none',
+        ], $result);
     }
 
     /**
@@ -59,9 +81,13 @@ class MessageBodyFieldsExtractorTest extends TestCase
         $extractor = new MessageBodyFieldsExtractor();
         $message = new Request('POST', '/', [], 'not a json');
 
-        $result = $extractor->extract($message, ['code' => 'error.code']);
+        $result = $extractor->extract($message, [
+            'code' => 'error.code',
+        ]);
 
-        $this->assertSame(['code' => 'unknown'], $result);
+        $this->assertSame([
+            'code' => 'unknown',
+        ], $result);
     }
 
     /**
@@ -71,9 +97,13 @@ class MessageBodyFieldsExtractorTest extends TestCase
     {
         $extractor = new MessageBodyFieldsExtractor();
 
-        $result = $extractor->extract(null, ['code' => 'error.code']);
+        $result = $extractor->extract(null, [
+            'code' => 'error.code',
+        ]);
 
-        $this->assertSame(['code' => 'unknown'], $result);
+        $this->assertSame([
+            'code' => 'unknown',
+        ], $result);
     }
 
     /**
@@ -82,7 +112,9 @@ class MessageBodyFieldsExtractorTest extends TestCase
     public function returnsEmptyArrayWhenNoFieldsConfigured(): void
     {
         $extractor = new MessageBodyFieldsExtractor();
-        $message = new Request('POST', '/', [], json_encode(['method' => 'x']));
+        $message = new Request('POST', '/', [], json_encode([
+            'method' => 'x',
+        ]));
 
         $this->assertSame([], $extractor->extract($message, []));
     }
@@ -93,10 +125,14 @@ class MessageBodyFieldsExtractorTest extends TestCase
     public function rewindsBodyStreamAfterReading(): void
     {
         $extractor = new MessageBodyFieldsExtractor();
-        $body = json_encode(['method' => 'pointg/sessions/create']);
+        $body = json_encode([
+            'method' => 'pointg/sessions/create',
+        ]);
         $message = new Request('POST', '/', [], $body);
 
-        $extractor->extract($message, ['method' => 'method']);
+        $extractor->extract($message, [
+            'method' => 'method',
+        ]);
 
         $this->assertSame($body, $message->getBody()->getContents());
     }
@@ -109,15 +145,22 @@ class MessageBodyFieldsExtractorTest extends TestCase
         $extractor = new MessageBodyFieldsExtractor();
 
         $body = $this->createMock(StreamInterface::class);
-        $body->method('isSeekable')->willReturn(false);
-        $body->expects($this->never())->method('__toString');
+        $body->method('isSeekable')
+            ->willReturn(false);
+        $body->expects($this->never())
+            ->method('__toString');
 
         $message = $this->createMock(MessageInterface::class);
-        $message->method('getBody')->willReturn($body);
+        $message->method('getBody')
+            ->willReturn($body);
 
-        $result = $extractor->extract($message, ['method' => 'method']);
+        $result = $extractor->extract($message, [
+            'method' => 'method',
+        ]);
 
-        $this->assertSame(['method' => 'unknown'], $result);
+        $this->assertSame([
+            'method' => 'unknown',
+        ], $result);
     }
 
     /**
@@ -126,10 +169,18 @@ class MessageBodyFieldsExtractorTest extends TestCase
     public function skipsBodyReadingWhenBodyExceedsMaxBytes(): void
     {
         $extractor = new MessageBodyFieldsExtractor();
-        $message = new Request('POST', '/', [], json_encode(['method' => str_repeat('a', 100)]));
+        $message = new Request('POST', '/', [], json_encode([
+            'method' => str_repeat('a', 100),
+        ]));
 
-        $result = $extractor->extract($message, ['method' => 'method'], ['max_body_bytes' => 10]);
+        $result = $extractor->extract($message, [
+            'method' => 'method',
+        ], [
+            'max_body_bytes' => 10,
+        ]);
 
-        $this->assertSame(['method' => 'unknown'], $result);
+        $this->assertSame([
+            'method' => 'unknown',
+        ], $result);
     }
 }

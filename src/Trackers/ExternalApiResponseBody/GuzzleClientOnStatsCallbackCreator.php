@@ -37,7 +37,7 @@ class GuzzleClientOnStatsCallbackCreator
                 ->getUri()
                 ->getHost(),
             'status' => optional($response)
-                    ->getStatusCode() ?? self::DEFAULT_STATUS_CODE,
+                ->getStatusCode() ?? self::DEFAULT_STATUS_CODE,
         ];
 
         $tags = array_merge(
