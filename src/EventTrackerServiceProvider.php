@@ -10,6 +10,7 @@ use Umbrellio\EventTracker\Repositories\EventRepository\Installer as EventReposi
 use Umbrellio\EventTracker\Repositories\PrometheusRepository\Installer as PrometheusRepositoryInstaller;
 use Umbrellio\EventTracker\Trackers\BaseInstaller;
 use Umbrellio\EventTracker\Trackers\ExternalApiResponse\Installer as ExternalApiResponseInstaller;
+use Umbrellio\EventTracker\Trackers\ExternalApiResponseBody\Installer as ExternalApiResponseBodyInstaller;
 use Umbrellio\EventTracker\Trackers\JobsDuration\Installer as JobsDurationInstaller;
 use Umbrellio\EventTracker\Trackers\JobsLog\Installer as JobsLogInstaller;
 use Umbrellio\EventTracker\Trackers\ResponseTime\Installer as ResponseTimeInstaller;
@@ -21,6 +22,7 @@ class EventTrackerServiceProvider extends ServiceProvider
         'jobs_log' => JobsLogInstaller::class,
         'response_time' => ResponseTimeInstaller::class,
         'external_api_response' => ExternalApiResponseInstaller::class,
+        'external_api_response_body' => ExternalApiResponseBodyInstaller::class,
     ];
 
     private const REPOSITORY_INSTALLER_CONNECTION_MAP = [
